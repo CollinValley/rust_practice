@@ -192,3 +192,7 @@ struct Point {
 }
 
 // Interior mutability
+
+//Nothing really to add here, remember Cell and RefCell for opening files and storing a smart
+//reference to the file. Easier to modify something like a log file which normally should not
+// be modifiable
