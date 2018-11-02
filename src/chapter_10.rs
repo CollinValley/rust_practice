@@ -104,12 +104,102 @@ enum RoughTime {
     InTheFuture(TimeUnit, u32)
 }
 
-/*  example calls
-let four_score_and_seven_years_ago =
-    RoughTime::InThePast(TimeUnit::Years, 4*20 + 7);
+fn rough_time_to_english(rt: RoughTime) -> String {
+    match rt {
+        RoughTime::InThePast(unit, 1) =>
+            format!("a {} ago", unit.singular()),
+        RoughTime::InThePast(units, count) =>
+            format!("{} {} ago", count, units.plural()),
+        RoughTime::JustNow =>
+            format!("just now"),
+        RoughTime::InTheFuture(unit, 1) =>
+            format!("a {} from now", unit.singular()),
+        RoughTime::InTheFuture(units, count) =>
+            format!("{} {} from now", count, units.plural())
+    }
+}
 
-let three_hours_from_now =
-    RoughTime::InTheFuture(TimeUnit::Hours, 3);
- */
+#[test]
+fn test_rough_time_to_english() {
+    let one_day_ago = RoughTime::InThePast(TimeUnit::Days, 1);
+    let two_years_ago = RoughTime::InThePast(TimeUnit::Years, 2);
+    let right_now = RoughTime::JustNow;
+    let one_second_away = RoughTime::InTheFuture(TimeUnit::Seconds, 1);
+    let two_months_away = RoughTime::InTheFuture(TimeUnit::Months, 2);
 
+    assert_eq!("a day ago",
+               rough_time_to_english(one_day_ago));
+    assert_eq!("2 years ago",
+               rough_time_to_english(two_years_ago));
+    assert_eq!("just now",
+               rough_time_to_english(right_now));
+    assert_eq!("a second from now",
+               rough_time_to_english(one_second_away));
+    assert_eq!("2 months from now",
+               rough_time_to_english(two_months_away));
+}
+
+/// A rich enum to encapsulate JSON values
+///
+/// Notice the Object or Array types, which are cool.
+/*
+enum Json {
+    Null,
+    Boolean(bool),
+    Number(f64),
+    String(String),
+    Array(Vec<Json>),
+    Object(Box<HashMap<String, Json>>)
+}
+*/
+
+
+/// Data Structure for a Binary Tree
+// An ordered collection of `T`s
+enum BinaryTree<T> {
+    Empty,
+    NonEmpty(Box<TreeNode<T>>)
+}
+
+//A part of a BinaryTree.
+struct TreeNode<T> {
+    element: T,
+    left: BinaryTree<T>,
+    right: BinaryTree<T>
+}
+
+#[test]
+fn test_build_basic_tree() {
+    use self::BinaryTree::*;
+
+    let jupiter_tree = NonEmpty(Box::new(TreeNode {
+        element: "Jupiter",
+        left: Empty,
+        right: Empty
+    }));
+
+    let mercury_tree = NonEmpty(Box::new(TreeNode {
+        element: "Mercury",
+        left: Empty,
+        right: Empty
+    }));
+
+    let mars_tree = NonEmpty(Box::new(TreeNode {
+        element: "Mars",
+        left: jupiter_tree,
+        right: mercury_tree
+    }));
+
+    let uranus_tree = NonEmpty(Box::new(TreeNode {
+        element: "Uranus",
+        left: Empty,
+        right: Empty
+    }));
+
+    let _tree = NonEmpty(Box::new(TreeNode {
+        element: "Saturn",
+        left: mars_tree,
+        right: uranus_tree
+    }));
+}
 
