@@ -203,3 +203,55 @@ fn test_build_basic_tree() {
     }));
 }
 
+impl<T: Ord> BinaryTree<T> {
+    fn add(&mut self, value: T) {
+        match *self {
+            BinaryTree::Empty =>
+                *self = BinaryTree::NonEmpty(Box::new(TreeNode {
+                    element: value,
+                    left: BinaryTree::Empty,
+                    right: BinaryTree::Empty
+                })),
+            BinaryTree::NonEmpty(ref mut node) =>
+                if value <= node.element {
+                    node.left.add(value);
+                } else {
+                    node.right.add(value);
+                }
+        }
+    }
+    // I wrote this myself :)))
+    fn search(&self, value: T) -> bool {
+        match *self {
+            BinaryTree::Empty =>
+                { false },
+            BinaryTree::NonEmpty(ref node) =>
+                if value == node.element {
+                    true
+                } else if value < node.element {
+                    node.left.search(value)
+                } else {
+                    node.right.search(value)
+                }
+        }
+    }
+    //TODO: tree traversals
+}
+
+#[test]
+fn test_add_and_search_binary_tree() {
+
+    let mut planets = BinaryTree::Empty;
+    planets.add("Mercury");
+    planets.add("Venus");
+    planets.add("Earth");
+    planets.add("Mars");
+    planets.add("Jupiter");
+    planets.add("Saturn");
+    planets.add("Uranus");
+    planets.add("Neptune");
+
+    assert!(planets.search("Mercury"));
+    assert!(planets.search("Uranus"));
+    assert!(!planets.search("Pluto"));
+}
