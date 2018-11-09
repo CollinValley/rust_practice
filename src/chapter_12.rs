@@ -77,3 +77,53 @@ fn test_complex_negation() {
     assert_eq!(-a.re, c.re);
     assert_eq!(-a.im, c.im);
 }
+
+use std::ops::AddAssign;
+
+impl<T> AddAssign for Complex<T>
+    where T: AddAssign<T>
+{
+    fn add_assign(&mut self, rhs: Complex<T>) {
+        self.re += rhs.re;
+        self.im += rhs.im;
+    }
+}
+
+#[test]
+fn test_add_assign() {
+    let mut a = Complex { re: 1, im: 1 };
+    let b = Complex { re: 2, im: 2 };
+    a += b;
+    assert_eq!(a.re, 3);
+    assert_eq!(a.im, 3);
+}
+
+use std::cmp::PartialEq;
+
+impl<T> PartialEq for Complex<T>
+    where T: PartialEq
+{
+    fn eq(&self, other: &Complex<T>) -> bool {
+        self.re == other.re && self.im == other.im
+    }
+}
+
+use std::ops::{ Mul, Sub};
+
+impl<T> Mul for Complex<T>
+    where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Copy
+{
+    type Output = Self;
+    fn mul(self, rhs: Complex<T>) -> Self {
+        let real = (self.re * rhs.re) - (self.im * rhs.im);
+        let imaginary = (self.re * rhs.im) + (self.im * rhs.re);
+        Complex{ re: real, im: imaginary }
+    }
+}
+
+#[test]
+fn test_eq() {
+    let x = Complex { re: 5, im: 2 };
+    let y = Complex { re: 2, im: 5 };
+    assert_eq!(x * y, Complex { re: 0, im: 29 });
+}
