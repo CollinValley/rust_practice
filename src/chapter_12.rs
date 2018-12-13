@@ -127,3 +127,28 @@ fn test_eq() {
     let y = Complex { re: 2, im: 5 };
     assert_eq!(x * y, Complex { re: 0, im: 29 });
 }
+
+use std::fmt;
+use std::cmp::PartialOrd;
+use std::default::Default;
+use num::Signed;
+
+impl<T> fmt::Display for Complex<T>
+    where T: PartialOrd + fmt::Display + Default + Signed
+{
+    fn fmt(&self, dest: &mut fmt::Formatter) -> fmt::Result {
+        let i_sign = if self.im < T::default() { '-' } else { '+' };
+        write!(dest, "{} {} {}i", self.re, i_sign, self.im.abs())
+    }
+}
+
+#[test]
+fn test_fmt_display() {
+    let one_twenty = Complex { re: -0.5, im: 0.866 };
+    assert_eq!(format!("{}", one_twenty),
+               "-0.5 + 0.866i");
+
+    let two_forty = Complex { re: -0.5, im: -0.866 };
+    assert_eq!(format!("{}", two_forty),
+               "-0.5 - 0.866i");
+}

@@ -5,3 +5,4 @@ authors = ["Collin Valley <collin.valley@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+num = "0.2"
